@@ -1,30 +1,102 @@
+// paragraphs that it will go through randomly
 const paragraphs = [
-    "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet and is often used for typing practice.",
-    "Typing fast and accurately is a valuable skill in the digital age. Practice regularly to improve your speed and precision.",
-    "JavaScript is a versatile programming language used for web development, server-side scripting, and even game creation.",
-    "A journey of a thousand miles begins with a single step. Consistency and perseverance are key to achieving your goals.",
-    "Clouds drift lazily across the sky, casting soft shadows on the ground below. The gentle breeze whispers through the trees.",
-    "Learning to code opens up a world of possibilities. With patience and curiosity, anyone can become a proficient programmer.",
-    "She sells seashells by the seashore. The shells she sells are surely seashells.",
-    "In the heart of the city, the lights never dim. People hustle and bustle, chasing dreams and ambitions.",
-    "Practice makes perfect. The more you type, the better your fingers will remember the keys.",
-    "Reading books expands your mind and vocabulary. Make time each day to enjoy a good story."
+  "The quick brown fox jumps over the lazy dog.",
+  "Typing fast and accurately is a valuable skill.",
+  "JavaScript is a versatile programming language.",
+  "A journey of a thousand miles begins with a single step.",
+  "Clouds drift lazily across the sky.",
+  "Learning to code opens up a world of possibilities.",
+  "She sells seashells by the seashore.",
+  "In the heart of the city, the lights never dim.",
+  "Practice makes perfect.",
+  "Reading books expands your mind."
 ];
 
+// varaibles
+let currentIndex = 0;
+let startTime = null;
+let container;
+
+// displaying the paragraph
 function renderParagraph() {
-    const randomNumber = Math.floor(Math.random() *paragraphs.length);
-    const currentParagraph = paragraphs[randomNumber];
-    const characters = currentParagraph.split("")
+  const randomIndex = Math.floor(Math.random() * paragraphs.length);
+  const currentParagraph = paragraphs[randomIndex];
+  const characters = currentParagraph.split("");
 
-    const container = document.getElementById("paragraph-container");
-    container.innerHTML = "";
-    
-    characters.forEach(i => {
-        const span = document.createElement("span")
-        span.innerText = i
-        span.classList.add("letter")
-        container.appendChild(span)
-    });
-};
+  document.getElementById("wpm-display").innerText = "WPM: --";
 
+  container = document.getElementById("paragraph-container");
+  container.innerHTML = "";
+  currentIndex = 0;
+  startTime = null;
+
+  characters.forEach(char => {
+    const span = document.createElement("span");
+    span.innerText = char;
+    span.classList.add("letter");
+    container.appendChild(span);
+  });
+
+  container.children[0].classList.add("current");
+}
+
+// WPM calculations - live version
+function calculateWPM() {
+  if (!startTime) return;
+
+  const currentTime = new Date();
+  const elapsedMinutes = (currentTime - startTime) / 1000 / 60;
+
+  const typedText = Array.from(container.querySelectorAll(".correct"))
+    .map(span => span.innerText)
+    .join("");
+
+  const wordCount = typedText.trim().split(/\s+/).length;
+  const wpm = Math.round(wordCount / elapsedMinutes);
+
+  const wpmDisplay = document.getElementById("wpm-display");
+  if (isFinite(wpm) && wpm > 0) {
+    wpmDisplay.innerText = `WPM: ${wpm}`;
+  } else {
+    wpmDisplay.innerText = `WPM: --`;
+  }
+}
+
+// handling keyinput
+document.addEventListener("keydown", function (event) {
+  const spans = container.querySelectorAll("span");
+  if (currentIndex >= spans.length) return;
+
+  if (!startTime) startTime = new Date();
+
+  const currentSpan = spans[currentIndex];
+  const expectedChar = currentSpan.innerText;
+
+  currentSpan.classList.remove("current");
+
+  if (event.key === expectedChar) {
+    currentSpan.classList.add("correct");
+  } else if (event.key.length === 1) {
+    currentSpan.classList.add("incorrect");
+  } else {
+    currentSpan.classList.add("current");
+    return;
+  }
+
+  currentIndex++;
+
+  if (currentIndex < spans.length) {
+    spans[currentIndex].classList.add("current");
+  } else {
+    calculateWPM(); // final WPM
+  }
+
+  calculateWPM(); // live WPM update
+
+  if (event.key === " ") {
+    event.preventDefault();
+  }
+});
+
+document.getElementById("restart").addEventListener("click", renderParagraph);
 renderParagraph();
