@@ -1,32 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Type Racer</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Type Racer</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <div>
-        <h1>
-            Type Racer
-        </h1>
-        <p>
-            Type Racer is a typing game where you can test your typing speed and accuracy. 
-            You can play against others or practice on your own. 
-            The game provides a text passage that you need to type as quickly and accurately as possible.
-        </p>
-        <div id="paragraph-container">
-            
-        </div>   
-        
-        <div id="timer">
-            60 seconds
-        </div>
-        <button id="restart">
-            Restart
-        </button>
-    </div>
+  <div>
+    <h1>Type Racer</h1>
+    <p>
+      Type Racer is a typing game where you can test your typing speed and accuracy.
+      The game provides a text passage that you need to type as quickly and accurately as possible.
+    </p>
+    <p>
+        Press Enter or the Restart button for a new scentence
+    </p>
 
-    <script src="script.js"></script>
+    <div id="paragraph-container"></div>
+    <div id="stats">
+        <div id="wpm-display">WPM: --</div>
+    </div>
+    <button id="restart">Restart</button>
+  </div>
+
+  <script src="script.js"></script>
 </body>
+</html>
